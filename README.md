@@ -12,7 +12,7 @@ There are a couple query parameters you can pass, here's a list of them:
     - Type: `string`
     - Default: `'gay'`
     - Values: `gay`, `lesbian`, `bi`, `trans`, `straight`, `mine`
-    - Example: https://uregay.lol/?flag=lesbian
+    - Example: https://uregay.lol/?flag=lesbian, https://uregay.lol/?flag=mine
   + `colour` a colour of a row in the flag, overrides `flag` parameter if passed. Can be passed multiple times for multiple rows.
     - Type: `string`
     - Default: `null`
