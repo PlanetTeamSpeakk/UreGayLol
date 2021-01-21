@@ -1,4 +1,5 @@
 
+<?php header("Feature-Policy: autoplay *;");?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -24,9 +25,11 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   </head>
   <body>
-    <script>
-      AOS.init({once: true});
-    </script>
+    <iframe id="autoplay" allow="autoplay" style="border: 0; width: 0; height: 0">
+      <audio src="data/silence.mp3" autoplay></audio>
+    </iframe>
+    <audio id="mine" src="data/mine.mp3" preload></audio>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://threejs.org/build/three.min.js"></script>
     <script src="data/pride_flag.js"></script>
     <div id="content">
@@ -38,6 +41,9 @@
       <footer>
         <p>Created by PlanetTeamSpeak<br>Source <a href="https://github.com/PlanetTeamSpeakk/UreGayLol">here</a></p>
       </footer>
+      <script>
+        AOS.init({once: true});
+      </script>
     </div>
   </body>
 </html>
