@@ -1,0 +1,67 @@
+@font-face {
+  font-family: Gilbert;
+  src: url(gilbert.otf);
+}
+
+#pride_flag {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+}
+
+#content {
+  font-family: Gilbert;
+  color: antiquewhite;
+  text-align: center;
+  z-index: 0;
+  left: 12px;
+  top: 10px;
+  margin: auto;
+}
+
+#gay {
+  transition-delay: 4000ms;
+  margin-top: 0;
+  font-size: 150px;
+  letter-spacing: 20px;
+  -webkit-background-clip: text;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+/* https://www.w3schools.com/howto/howto_css_glowing_text.asp */
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+
+h1 {
+  font-size: 100px;
+}
+
+h2 {
+  font-size: 50px;
+}
+
+h3 {
+  font-size: 35px;
+}
+
+h4 {
+  font-size: 25px;
+}
+
+footer {
+  position: fixed;
+  top: 0;
+  right: 10px;
+  width: 10%;
+}
