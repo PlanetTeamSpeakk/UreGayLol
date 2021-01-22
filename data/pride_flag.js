@@ -96,8 +96,22 @@ document.addEventListener('DOMContentLoaded', function () {
     climax.style.transitionDelay = "3300ms";
     var audio = document.getElementById("mine");
     audio.volume = 0.2;
-    audio.play();
-  }
+    audio.play().then(val => AOS.init({once: true})).catch(err => {
+      var temp = document.createElement("h1");
+      temp.innerHTML = "CLICK TO START";
+      temp.style = "width: 100%; text-align: center;";
+      document.getElementById("content").appendChild(temp);
+      h1.style.display = h2.style.display = h3.style.display = h4.style.display = climax.style.display = renderer.domElement.style.display = "none";
+      var func = function () {
+        temp.parentElement.removeChild(temp);
+        h1.style.display = h2.style.display = h3.style.display = h4.style.display = climax.style.display = renderer.domElement.style.display = null;
+        AOS.init({once: true})
+        audio.play();
+        document.removeEventListener('click', func);
+      };
+      document.addEventListener('click', func);
+    });
+  } else AOS.init({once: true});
   renderer.domElement.id = "pride_flag";
   document.body.appendChild(renderer.domElement);
   setup();
