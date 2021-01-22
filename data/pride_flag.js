@@ -43,6 +43,7 @@ heartShape.bezierCurveTo(12, 15.4, 16, 11, 16, 7);
 heartShape.bezierCurveTo(16, 7, 16, 0, 10, 0);
 heartShape.bezierCurveTo(7, 0, 5, 5, 5, 5);
 
+var started = false;
 const loader = new THREE.TextureLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -56,34 +57,43 @@ if (!mine) scene.add(flagMesh);
 const heartGeometry = new THREE.ShapeGeometry(heartShape);
 heartGeometry.scale(0.075, 0.075, 0.075);
 heartGeometry.rotateZ(Math.PI);
-const heartMaterial = new THREE.MeshBasicMaterial({color: 0xFF4400});
+const heartMaterial = new THREE.MeshBasicMaterial({color: 0xE31B23});
 const heartMesh1 = new THREE.Mesh(heartGeometry, heartMaterial);
 heartMesh1.position.set(-1.5, 0, 0);
-const heartMesh2 = new THREE.Mesh(heartGeometry, heartMaterial);
+const heartMesh2 = heartMesh1.clone();
 heartMesh2.position.set(2.2, 1, 0);
+
+const habbiMaterial = new THREE.SpriteMaterial({map: loader.load("data/habbi.png"), color: 0xFFFFFF});
+const habbiMesh = new THREE.Sprite(habbiMaterial);
+habbiMesh.position.set(-1.2, 0.8, 0);
+
+const loveMaterial = new THREE.SpriteMaterial({map: loader.load("data/love.png"), color: 0xFFFFFF});
+const loveMesh = new THREE.Sprite(loveMaterial);
+loveMesh.position.set(2, -1, 0);
+
 if (mine) {
   scene.add(heartMesh1);
   scene.add(heartMesh2);
-  
-  const habbiMaterial = new THREE.SpriteMaterial({map: loader.load("data/habbi.png"), color: 0xFFFFFF});
-  const habbiMesh = new THREE.Sprite(habbiMaterial);
-  habbiMesh.position.set(-1.2, 0.8, 0);
   scene.add(habbiMesh);
-
-  const loveMaterial = new THREE.SpriteMaterial({map: loader.load("data/love.png"), color: 0xFFFFFF});
-  const loveMesh = new THREE.Sprite(loveMaterial);
-  loveMesh.position.set(2, -1, 0);
   scene.add(loveMesh);
 }
 
 const leftLight = new THREE.SpotLight(0xFFFFFF, 2);
 leftLight.position.set(-5, 0, 1.5);
 scene.add(leftLight);
-const clock = new THREE.Clock()
+const clock = new THREE.Clock({autostart: false});
+const caster = new THREE.Raycaster();
+
+var heartPairs = [];
+var hearts = [];
+const smallHeartGeometry = new THREE.ShapeGeometry(heartShape);
+smallHeartGeometry.scale(0.0075, 0.0075, 0.0075);
+smallHeartGeometry.rotateZ(Math.PI);
+const smallHeartMesh = new THREE.Mesh(smallHeartGeometry, heartMaterial);
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("name").innerHTML = (getQueryVariable("name") || "Someone out there");
-  document.getElementById("gay").innerHTML = (getQueryVariable("text") || flag).toUpperCase();
+  document.getElementById("gay").innerHTML = (mine ? "mine" : getQueryVariable("text") || flag).toUpperCase();
   if (mine) {
     var h1 = document.getElementsByTagName("h1")[0], h2 = document.getElementsByTagName("h2")[0], h3 = document.getElementsByTagName("h3")[0], h4 = document.getElementsByTagName("h4")[0], climax = document.getElementsByTagName("h1")[1];
     h1.innerHTML = "I just";
@@ -96,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     climax.style.transitionDelay = "3300ms";
     var audio = document.getElementById("mine");
     audio.volume = 0.2;
-    audio.play().then(val => AOS.init({once: true})).catch(err => {
+    audio.play().then(val => start()).catch(err => {
       var temp = document.createElement("h1");
       temp.innerHTML = "CLICK TO START";
       temp.style = "width: 100%; text-align: center;";
@@ -105,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var func = function () {
         temp.parentElement.removeChild(temp);
         h1.style.display = h2.style.display = h3.style.display = h4.style.display = climax.style.display = renderer.domElement.style.display = null;
-        AOS.init({once: true})
+        start();
         audio.play();
         document.removeEventListener('click', func);
       };
@@ -120,6 +130,12 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('resize', function() {
   setup();
 });
+
+function start() {
+  AOS.init({once: true});
+  started = true;
+  clock.start();
+}
 
 function setup() {
   renderer.width = renderer.domElement.width = window.innerWidth;
@@ -141,12 +157,56 @@ const update = (t, premulti) => v => {
   v.z = (waveX1 + waveX2 + waveY1) * multi;
 };
 
+var lastupdate1 = -1, lastupdate2 = -1;
+var direction1 = false, direction2 = false;
+var lastSH = -1;
+
 function animate() {
-  const t = clock.getElapsedTime();
-  flagMesh.geometry.vertices.map(update(t));
-  flagMesh.geometry.verticesNeedUpdate = true;
-  heartMesh1.geometry.vertices.map(update(t, 0.2));
-  heartMesh1.geometry.verticesNeedUpdate = true;
+  if (started) {
+    const t = clock.getElapsedTime();
+
+    flagMesh.geometry.vertices.map(update(t));
+    flagMesh.geometry.verticesNeedUpdate = true;
+
+    heartGeometry.vertices.map(update(t, 0.2));
+    heartGeometry.verticesNeedUpdate = true;
+
+    var tm = (t*1000)%2000;
+    if (tm < lastupdate1) direction1 = !direction1;
+    lastupdate1 = tm;
+    habbiMesh.material.rotation = (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5 - 0.25 * Math.PI);
+
+    tm = ((t+0.5)*1000)%2000;
+    if (tm < lastupdate2) direction2 = !direction2;
+    lastupdate2 = tm;
+    loveMesh.material.rotation = (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5 - 0.25 * Math.PI);
+
+    if (t - lastSH >= 0.1) {
+      lastSH = t;
+      var sh = smallHeartMesh.clone();
+      var shm = heartMaterial.clone();
+      shm.color.add(new THREE.Color((Math.random()-0.5) / 5, (Math.random()-0.5) / 5, (Math.random()-0.5) / 2));
+      sh.material = shm;
+      sh.position.set((Math.random()-0.5) * 20, -2.1, -2);
+      heartPairs.push([sh, (Math.random()+1) * 0.5]);
+      hearts.push(sh);
+      scene.add(sh);
+    }
+
+    let heartsToDelete = [];
+    heartPairs.forEach(pair => {
+      var heart = pair[0];
+      var speed = pair[1];
+      if (heart.position.y >= 2.25) heartsToDelete.push(pair);
+      else heart.position.y += 0.01 * speed;
+    });
+    heartsToDelete.forEach(pair => {
+      heartPairs.splice(heartPairs.indexOf(pair), 1);
+      hearts.splice(hearts.indexOf(pair[0]), 1);
+      scene.remove(pair[0]);
+    });
+  }
+  
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
