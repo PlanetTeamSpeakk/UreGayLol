@@ -82,9 +82,7 @@ const leftLight = new THREE.SpotLight(0xFFFFFF, 2);
 leftLight.position.set(-5, 0, 1.5);
 scene.add(leftLight);
 const clock = new THREE.Clock({autostart: false});
-const caster = new THREE.Raycaster();
 
-var heartPairs = [];
 var hearts = [];
 const smallHeartGeometry = new THREE.ShapeGeometry(heartShape);
 smallHeartGeometry.scale(0.0075, 0.0075, 0.0075);
@@ -188,21 +186,19 @@ function animate() {
       shm.color.add(new THREE.Color((Math.random()-0.5) / 5, (Math.random()-0.5) / 5, (Math.random()-0.5) / 2));
       sh.material = shm;
       sh.position.set((Math.random()-0.5) * 20, -2.1, -2);
-      heartPairs.push([sh, (Math.random()+1) * 0.5]);
-      hearts.push(sh);
+      hearts.push([sh, (Math.random()+1) * 0.5]);
       scene.add(sh);
     }
 
     let heartsToDelete = [];
-    heartPairs.forEach(pair => {
+    hearts.forEach(pair => {
       var heart = pair[0];
       var speed = pair[1];
       if (heart.position.y >= 2.25) heartsToDelete.push(pair);
       else heart.position.y += 0.01 * speed;
     });
     heartsToDelete.forEach(pair => {
-      heartPairs.splice(heartPairs.indexOf(pair), 1);
-      hearts.splice(hearts.indexOf(pair[0]), 1);
+      hearts.splice(hearts.indexOf(pair), 1);
       scene.remove(pair[0]);
     });
   }
