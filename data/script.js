@@ -171,19 +171,21 @@ function invert(i, x) {
 }
 
 function rotateEmojis() {
-  const t = clock.getElapsedTime();
-  
-  // Heart face rotation
-  var tm = (t*1000)%2000;
-  if (tm < lastupdate1) direction1 = !direction1;
-  lastupdate1 = tm;
-  habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+  if (!paused) {
+    const t = clock.getElapsedTime();
 
-  // Heart eyes face rotation
-  tm = ((t+0.5)*1000)%2000;
-  if (tm < lastupdate2) direction2 = !direction2;
-  lastupdate2 = tm;
-  loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+    // Heart face rotation
+    var tm = (t*1000)%2000;
+    if (tm < lastupdate1) direction1 = !direction1;
+    lastupdate1 = tm;
+    habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+
+    // Heart eyes face rotation
+    tm = ((t+0.5)*1000)%2000;
+    if (tm < lastupdate2) direction2 = !direction2;
+    lastupdate2 = tm;
+    loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+  }
 }
 
 const update = (t, premulti) => v => {
