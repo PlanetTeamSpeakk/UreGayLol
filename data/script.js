@@ -43,7 +43,8 @@ heartShape.bezierCurveTo(12, 15.4, 16, 11, 16, 7);
 heartShape.bezierCurveTo(16, 7, 16, 0, 10, 0);
 heartShape.bezierCurveTo(7, 0, 5, 5, 5, 5);
 
-var started = false;
+var started = false, paused = false;
+var elapsedTime = -1;
 const loader = new THREE.TextureLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -131,6 +132,20 @@ window.addEventListener('resize', function() {
   setup();
 });
 
+window.addEventListener('focus', function () {
+  if (started) {
+    clock.start();
+    clock.elapsedTime = elapsedTime; // To make sure it continues where it left off.
+    paused = false;
+  }
+});
+
+window.addEventListener('blur', function () {
+  paused = true;
+  elapsedTime = clock.getElapsedTime();
+  clock.stop();
+});
+
 function start() {
   AOS.init({once: true});
   started = true;
@@ -167,7 +182,7 @@ var direction1 = false, direction2 = false;
 var lastSH = -1;
 
 function animate() {
-  if (started) {
+  if (started && !paused) {
     const t = clock.getElapsedTime();
 
     // Background flag wave
