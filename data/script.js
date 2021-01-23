@@ -170,21 +170,25 @@ function invert(i, x) {
   return i < x ? i : x - (i - x);
 }
 
+var rotateCount = 0;
+
 function rotateEmojis() {
   if (!paused) {
     const t = clock.getElapsedTime();
 
     // Heart face rotation
-    var tm = (t*1000)%2000;
+    var tm = (rotateCount*15)%2000;
     if (tm < lastupdate1) direction1 = !direction1;
     lastupdate1 = tm;
     habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
 
     // Heart eyes face rotation
-    tm = ((t+0.5)*1000)%2000;
+    tm = ((rotateCount+33)*15)%2000;
     if (tm < lastupdate2) direction2 = !direction2;
     lastupdate2 = tm;
     loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+    
+    rotateCount++;
   }
 }
 
