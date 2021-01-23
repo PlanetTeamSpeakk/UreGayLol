@@ -147,6 +147,11 @@ function setup() {
 }
 setup();
 
+function invert(i, x) {
+  i %= 2*x;
+  return i < x ? i : x - (i - x);
+}
+
 const update = (t, premulti) => v => {
   const waveX1 = 0.75 * Math.sin(v.x * 2 + t * 3 + v.y);
   const waveX2 = 0.25 * Math.sin(v.x * 3 + t * 2 + v.y);
@@ -182,23 +187,37 @@ function animate() {
     if (t - lastSH >= 0.1 && mine) {
       lastSH = t;
       var sh = smallHeartMesh.clone();
+      sh.geometry = smallHeartGeometry.clone();
       var shm = heartMaterial.clone();
       shm.color.add(new THREE.Color((Math.random()-0.5) / 5, (Math.random()-0.5) / 5, (Math.random()-0.5) / 2));
       sh.material = shm;
       sh.position.set((Math.random()-0.5) * 20, -2.1, -2);
-      hearts.push([sh, (Math.random()+1) * 0.5]);
+      hearts.push([sh, (Math.random()+1) * 0.5, t]);
       scene.add(sh);
     }
 
     let heartsToDelete = [];
-    hearts.forEach(pair => {
-      var heart = pair[0];
-      var speed = pair[1];
-      if (heart.position.y >= 2.25) heartsToDelete.push(pair);
-      else heart.position.y += 0.01 * speed;
+    hearts.forEach(heartData => {
+      var heart = heartData[0];
+      var speed = heartData[1];
+      var creationTime = heartData[2];
+      if (heart.position.y >= 2.25) heartsToDelete.push(heartData);
+      else {
+        heart.position.y += 0.01 * speed;
+        var max = 0;
+        const midY = (0.075*-1.9) / 2; // The highest vertice in the heart seems to be at -0.1425 which 'coincidentally' is -1.9 multiplied by the scale (0.075). Negative because it's rotated 180°, 1.9 because that's a tenth of the highest y-value used when defining the shape.
+        var ti = invert((t-creationTime)%0.5, 0.25);
+        heart.geometry.vertices.map(v => {
+          v.z = Math.sin(ti - 0.125) * (v.y - midY) * 4 * speed;
+        });
+        heart.position.x += (ti - 0.125) * 0.05 * (speed*0.5 + 0.5);
+        heart.geometry.verticesNeedUpdate = true;
+      }
     });
     heartsToDelete.forEach(pair => {
       hearts.splice(hearts.indexOf(pair), 1);
+      pair[0].geometry.dispose();
+      pair[0].material.dispose();
       scene.remove(pair[0]);
     });
   }
