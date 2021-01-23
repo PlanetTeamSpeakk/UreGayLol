@@ -16,8 +16,8 @@ There are a couple query parameters you can pass, here's a list of them:
   + `colour` a colour of a row in the flag, overrides `flag` parameter if passed. Can be passed multiple times for multiple rows.
     - Type: `string`
     - Default: `null`
-    - Values: any hex colour or [named HTML colour](https://www.w3schools.com/colors/colors_names.asp).
-    - Example: https://uregay.lol/?colour=red&colour=#FFFFFF&colour=blue
+    - Values: any hex colour (don't forget to replace the `#` at the beginning with `%23`) or [named HTML colour](https://www.w3schools.com/colors/colors_names.asp).
+    - Example: https://uregay.lol/?colour=red&colour=%23FFFFFF&colour=blue
   + `name` the name of whoever called the viewer gay.
     - Type: `string`
     - Default: `'Someone out there'`
