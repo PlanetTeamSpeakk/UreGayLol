@@ -132,18 +132,18 @@ window.addEventListener('resize', function() {
   setup();
 });
 
-window.addEventListener('focus', function () {
-  if (started) {
-    clock.start();
-    clock.elapsedTime = elapsedTime; // To make sure it continues where it left off.
-    paused = false;
+document.addEventListener('visibilitychange', function(ev) {
+  if (document.visibilityState == "visible") {
+    if (started) {
+      clock.start();
+      clock.elapsedTime = elapsedTime; // To make sure it continues where it left off.
+      paused = false;
+    }
+  } else {
+    paused = true;
+    elapsedTime = clock.getElapsedTime();
+    clock.stop();
   }
-});
-
-window.addEventListener('blur', function () {
-  paused = true;
-  elapsedTime = clock.getElapsedTime();
-  clock.stop();
 });
 
 function start() {
