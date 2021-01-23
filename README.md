@@ -24,5 +24,5 @@ There are a couple query parameters you can pass, here's a list of them:
     - Example: https://uregay.lol/?name=PlanetTeamSpeak
   + `text` the text to display instead of the default `'gay'`.
     - Type: `string`
-    - Default: the name of the `flag` parameter
+    - Default: the value of the `flag` parameter
     - Example: https://uregay.lol/?text=dutch
