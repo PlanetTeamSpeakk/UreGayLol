@@ -148,6 +148,7 @@ document.addEventListener('visibilitychange', function(ev) {
 
 function start() {
   AOS.init({once: true});
+  if (!started) setInterval(rotateEmojis, 15);
   started = true;
   clock.start();
 }
@@ -167,6 +168,22 @@ setup();
 function invert(i, x) {
   i %= 2*x;
   return i < x ? i : x - (i - x);
+}
+
+function rotateEmojis() {
+  const t = clock.getElapsedTime();
+  
+  // Heart face rotation
+  var tm = (t*1000)%2000;
+  if (tm < lastupdate1) direction1 = !direction1;
+  lastupdate1 = tm;
+  habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
+
+  // Heart eyes face rotation
+  tm = ((t+0.5)*1000)%2000;
+  if (tm < lastupdate2) direction2 = !direction2;
+  lastupdate2 = tm;
+  loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
 }
 
 const update = (t, premulti) => v => {
@@ -192,18 +209,6 @@ function animate() {
     // Hearts wave
     heartGeometry.vertices.map(update(t, 0.2));
     heartGeometry.verticesNeedUpdate = true;
-
-    // Heart face rotation
-    var tm = (t*1000)%2000;
-    if (tm < lastupdate1) direction1 = !direction1;
-    lastupdate1 = tm;
-    habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
-
-    // Heart eyes face rotation
-    tm = ((t+0.5)*1000)%2000;
-    if (tm < lastupdate2) direction2 = !direction2;
-    lastupdate2 = tm;
-    loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
 
     // Small background hearts creation
     if (t - lastSH >= 0.1 && mine) {
