@@ -66,10 +66,12 @@ heartMesh2.position.set(2.2, 1, 0);
 const habbiMaterial = new THREE.SpriteMaterial({map: loader.load("data/habbi.png"), color: 0xFFFFFF});
 const habbiMesh = new THREE.Sprite(habbiMaterial);
 habbiMesh.position.set(-1.2, 0.8, 0);
+habbiMesh.material.rotation = 1.57 / -2;
 
 const loveMaterial = new THREE.SpriteMaterial({map: loader.load("data/love.png"), color: 0xFFFFFF});
 const loveMesh = new THREE.Sprite(loveMaterial);
 loveMesh.position.set(2, -1, 0);
+loveMesh.material.rotation = habbiMesh.material.rotation + 0.24/2;
 
 if (mine) {
   scene.add(heartMesh1);
@@ -168,22 +170,27 @@ function animate() {
   if (started) {
     const t = clock.getElapsedTime();
 
+    // Background flag wave
     flagMesh.geometry.vertices.map(update(t));
     flagMesh.geometry.verticesNeedUpdate = true;
 
+    // Hearts wave
     heartGeometry.vertices.map(update(t, 0.2));
     heartGeometry.verticesNeedUpdate = true;
 
+    // Heart face rotation
     var tm = (t*1000)%2000;
     if (tm < lastupdate1) direction1 = !direction1;
     lastupdate1 = tm;
-    habbiMesh.material.rotation = (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5 - 0.25 * Math.PI);
+    habbiMesh.material.rotation += (direction1 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
 
+    // Heart eyes face rotation
     tm = ((t+0.5)*1000)%2000;
     if (tm < lastupdate2) direction2 = !direction2;
     lastupdate2 = tm;
-    loveMesh.material.rotation = (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5 - 0.25 * Math.PI);
+    loveMesh.material.rotation += (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5) * (1 - tm/2000) * 0.05;
 
+    // Small background hearts creation
     if (t - lastSH >= 0.1 && mine) {
       lastSH = t;
       var sh = smallHeartMesh.clone();
@@ -196,6 +203,7 @@ function animate() {
       scene.add(sh);
     }
 
+    // Small background hearts updating
     let heartsToDelete = [];
     hearts.forEach(heartData => {
       var heart = heartData[0];
@@ -210,10 +218,13 @@ function animate() {
         heart.geometry.vertices.map(v => {
           v.z = Math.sin(ti - 0.125) * (v.y - midY) * 4 * speed;
         });
-        heart.position.x += (ti - 0.125) * 0.05 * (speed*0.5 + 0.5);
+        var x = (ti - 0.125) * 0.5 * (speed*0.5 + 0.5);
+        heart.position.x += (x ** 2) * (x < 0 ? -1 : 1);
         heart.geometry.verticesNeedUpdate = true;
       }
     });
+    
+    // Small background hearts removal
     heartsToDelete.forEach(pair => {
       hearts.splice(hearts.indexOf(pair), 1);
       pair[0].geometry.dispose();
