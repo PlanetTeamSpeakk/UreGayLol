@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
       };
       document.addEventListener('click', func);
     });
-  } else AOS.init({once: true});
+  } else start();
   renderer.domElement.id = "pride_flag";
   document.body.appendChild(renderer.domElement);
   setup();
@@ -179,7 +179,7 @@ function animate() {
     lastupdate2 = tm;
     loveMesh.material.rotation = (direction2 ? -1 : 1) * (tm / 2000 * Math.PI * 0.5 - 0.25 * Math.PI);
 
-    if (t - lastSH >= 0.1) {
+    if (t - lastSH >= 0.1 && mine) {
       lastSH = t;
       var sh = smallHeartMesh.clone();
       var shm = heartMaterial.clone();
