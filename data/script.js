@@ -16,7 +16,7 @@ const flags = {
   gay: ["#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D"],
   lesbian: ["#D62900", "#FF9B55", "#FFFFFF", "#D461A6", "#A50062"],
   bi: ["#D60270", "#9B4F96", "#0038A8"],
-  trans: ["#55CDFC", "#FFFFFF", "#F7A8B8"],
+  trans: ["#55CDFC", "#F7A8B8", "#FFFFFF", "#F7A8B8", "#55CDFC"],
   straight: ["#000000", "#333333", "#666666", "#999999", "#CCCCCC", "#FFFFFF"]
 };
 
@@ -64,13 +64,11 @@ heartMesh1.position.set(-1.5, 0, 0);
 const heartMesh2 = heartMesh1.clone();
 heartMesh2.position.set(2.2, 1, 0);
 
-const habbiMaterial = new THREE.SpriteMaterial({map: loader.load("data/habbi.png"), color: 0xFFFFFF});
-const habbiMesh = new THREE.Sprite(habbiMaterial);
+const habbiMesh = new THREE.Sprite(new THREE.SpriteMaterial({map: loader.load("data/habbi.png"), color: 0xFFFFFF}));
 habbiMesh.position.set(-1.2, 0.8, 0);
 habbiMesh.material.rotation = 1.57 / -2;
 
-const loveMaterial = new THREE.SpriteMaterial({map: loader.load("data/love.png"), color: 0xFFFFFF});
-const loveMesh = new THREE.Sprite(loveMaterial);
+const loveMesh = new THREE.Sprite(new THREE.SpriteMaterial({map: loader.load("data/love.png"), color: 0xFFFFFF}));
 loveMesh.position.set(2, -1, 0);
 loveMesh.material.rotation = habbiMesh.material.rotation + 0.24/2;
 
@@ -93,7 +91,7 @@ smallHeartGeometry.rotateZ(Math.PI);
 const smallHeartMesh = new THREE.Mesh(smallHeartGeometry, heartMaterial);
 
 document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById("name").innerHTML = (getQueryVariable("name") || "Someone out there");
+  document.getElementById("name").innerHTML = getQueryVariable("name") || "Someone out there";
   document.getElementById("gay").innerHTML = (mine ? "mine" : getQueryVariable("text") || flag).toUpperCase();
   if (mine) {
     var h1 = document.getElementsByTagName("h1")[0], h2 = document.getElementsByTagName("h2")[0], h3 = document.getElementsByTagName("h3")[0], h4 = document.getElementsByTagName("h4")[0], climax = document.getElementsByTagName("h1")[1];
