@@ -62,5 +62,5 @@ footer {
   font-size: 1.65vh;
   top: 0;
   right: 10px;
-  width: 10vw;
+  width: fit-content;
 }
