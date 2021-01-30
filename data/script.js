@@ -99,14 +99,15 @@ function animate() {
     const t = clock.getElapsedTime();
 
     // Background flag wave
-    flagMesh.geometry.vertices.map(v => {
-      const waveX1 = 0.75 * Math.sin(v.x * 2 + t * 3 + v.y);
-      const waveX2 = 0.25 * Math.sin(v.x * 3 + t * 2 + v.y);
-      const waveY1 = 0.1 * Math.sin(v.y * 5 + t * 0.5 + v.x);
-      const multi = (v.x + 2.5) / 5*intensity;
-      v.z = (waveX1 + waveX2 + waveY1) * multi;
-    });
-    flagMesh.geometry.verticesNeedUpdate = true;
+    var pos = flagMesh.geometry.attributes.position;
+    for (var i = 0; i < pos.array.length; i += 3) {
+      const waveX1 = 0.75 * Math.sin(pos.array[i] * 2 + t * 3 + pos.array[i+1]);
+      const waveX2 = 0.25 * Math.sin(pos.array[i] * 3 + t * 2 + pos.array[i+1]);
+      const waveY1 = 0.1 * Math.sin(pos.array[i+1] * 5 + t * 0.5 + pos.array[i]);
+      const multi = (pos.array[i] + 2.5) / 5*intensity;
+      pos.array[i+2] = (waveX1 + waveX2 + waveY1) * multi;
+    }
+    pos.needsUpdate = true;
   }
   
   requestAnimationFrame(animate);
