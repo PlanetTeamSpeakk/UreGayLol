@@ -60,7 +60,28 @@ h4 {
 footer {
   position: fixed;
   font-size: 1.65vh;
-  top: 0;
-  right: 10px;
   width: fit-content;
+  top: 0;
+}
+
+footer#left {
+  left: 10px;
+}
+
+footer#right {
+  right: 10px;
+}
+
+a {
+  color: #E31B23;
+  text-decoration: underline solid transparent;
+  transition: 300ms ease;
+}
+
+a:hover {
+  text-decoration: underline solid currentcolor;
+}
+
+a:visited {
+  color: #E60073;
 }
